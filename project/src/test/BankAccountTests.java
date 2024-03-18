@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import bankapp.BankAccount;
+import bankapp.*;
 
 class BankAccountTests {
 
@@ -34,5 +34,17 @@ class BankAccountTests {
 		}
 
 	}
+
+	@Test
+	void testNoMoneyDeposit() {
+		BankAccount testAccount = new BankAccount();
+
+		testAccount.deposit(0);
+
+		assertEquals(0, testAccount.getBalance(), 0.01);
+
+	}
+
+	
 
 }
