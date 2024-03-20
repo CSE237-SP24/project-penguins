@@ -1,4 +1,4 @@
-package tests;
+package tests.bank_account_general_tests;
 
 import bank_Account.Bank_Account;
 import static org.junit.jupiter.api.Assertions.*;
