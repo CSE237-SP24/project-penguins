@@ -2,6 +2,7 @@ package bank_Account;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+import user_information.user_profile;
 
 public class Menu {
 
@@ -10,13 +11,16 @@ public class Menu {
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
-	
-		//Prompt user for a number(1 = view account, 2 = create account, 3 = quit)
+		
+		user_profile profile = mainMenu.makeProfile();
+		
+		//Prompt user for a number (1 = view account, 2 = create account, 3 = quit)
 		int createOrViewSelection = mainMenu.getUserSelectionToCreateOrView();
 		
+		//Continually re-prompts the user unless they quit
 		while (createOrViewSelection != 3) {
 			
-			//(1 = deposit, 2 = withdraw, 3 = view balance)
+			//Prompts the user for a number (1 = deposit, 2 = withdraw, 3 = view balance)
 			if (createOrViewSelection == 1) {
 				//View existing bank account
 				Bank_Account currentAccount = mainMenu.getUserToSelectBankAccount();
@@ -33,17 +37,17 @@ public class Menu {
 					} else {
 						double withdraw = mainMenu.getWithdrawAmount(currentAccount);
 						currentAccount.withdraw(withdraw);
-						System.out.println("Balance is now: " + currentAccount.getBalance());
+						System.out.println("Balance is now: $" + currentAccount.getBalance());
 					}
 				} else if (userAction == 3){
 					//View balance
-					System.out.println("Current balance: " + currentAccount.getBalance());
+					System.out.println("Current balance: $" + currentAccount.getBalance());
 				}
 				
 			} else if (createOrViewSelection == 2) {
 				//Create a new bank account
 				
-				//(1 = checking, 2 = savings)
+				//Prompts the user for a number (1 = checking, 2 = savings)
 				int accountType = mainMenu.getNewAccountType();
 				String name = mainMenu.getNewAccountName();
 				mainMenu.createNewAccount(name, accountType);
@@ -53,9 +57,43 @@ public class Menu {
 			//After desired action is completed, re-prompt user
 			createOrViewSelection = mainMenu.getUserSelectionToCreateOrView();
 		}
+		System.out.println("User has quit. Goodbye!");
+		
+	}
+	
+	public Menu() {
+		this.in = new Scanner(System.in);
+		this.accounts = new ArrayList<Bank_Account>();
 	}
 
-
+	
+	private user_profile makeProfile() {
+		user_profile newProfile = new user_profile();
+		String username = getUsername(newProfile);
+		String password = getPassword(newProfile);
+		newProfile.setLoginInformation(username, password);
+		System.out.println("Logged in as " + username + ".\n");
+		return newProfile;
+	}
+	
+	private String getUsername (user_profile newProfile) {
+		System.out.println("Enter a username for your new account:\n");
+		String username = in.nextLine();
+		while (!newProfile.isValidUsername(username)) {
+			username = in.nextLine();
+		}
+		return username;
+	}
+	
+	private String getPassword (user_profile newProfile) {
+		System.out.println("Enter a password for your new account:\n");
+		String password = in.nextLine();
+		while (!newProfile.isValidPassword(password)) {
+			password = in.nextLine();
+		}
+		return password;
+	}
+ 
 	private int getNewAccountType() {
 		System.out.println("Type 1 to create a checking account:\nType 2 to create a savings account:\n");
 		int selection = in.nextInt();
@@ -66,18 +104,13 @@ public class Menu {
 		return selection;
 	}
 
-
-	public Menu() {
-		this.in = new Scanner(System.in);
-		this.accounts = new ArrayList<Bank_Account>();
-	}
-
+	
 	public void displayingOptions() {
 		System.out.println("Type 1 to view account(s): \nType 2 to create an account:\n");
 	}
 
 	public String getNewAccountName() {
-		System.out.print("Type the name of the account to be created: \n");
+		System.out.print("Type the name of the account to be created:\n");
 		String name = in.next();
 		return name;
 	}
