@@ -11,6 +11,7 @@ NOTE: All code is currently in the **dev branch**
 
 **During this iteration, we accomplished the following:**
 - `user_profile` class with first name, last name, username (profile ID), SSN, security questions
+  - Note: SSN and security questions have not been implemented yet, they are currently just instance variables
 - `Bank_Account` class, the parent class for `Checking_Account` and `Savings_Account` with a balance, name, history, getters, deposit, and withdraw.
 - `Savings_Account` subclass to `Bank_Account`
 - `Checking_Account` subclass to `Bank_Account`
