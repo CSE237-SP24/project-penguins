@@ -23,34 +23,11 @@ public class Menu {
 			//Prompts the user for a number (1 = deposit, 2 = withdraw, 3 = view balance)
 			if (createOrViewSelection == 1) {
 				//View existing bank account
-				Bank_Account currentAccount = mainMenu.getUserToSelectBankAccount();
-				int userAction = mainMenu.getUserAction();
-				if (userAction == 1) {
-					//Deposit
-					double deposit = mainMenu.getDepositAmount();
-					currentAccount.deposit(deposit);
-					System.out.println("Balance is now: " + currentAccount.getBalance());
-				} else if (userAction == 2) {
-					//Withdraw
-					if (currentAccount.getBalance() == 0.0) {
-						System.out.println("Account has no money to withdraw.");
-					} else {
-						double withdraw = mainMenu.getWithdrawAmount(currentAccount);
-						currentAccount.withdraw(withdraw);
-						System.out.println("Balance is now: $" + currentAccount.getBalance());
-					}
-				} else if (userAction == 3){
-					//View balance
-					System.out.println("Current balance: $" + currentAccount.getBalance());
-				}
+				mainMenu.viewExisting();
 				
 			} else if (createOrViewSelection == 2) {
 				//Create a new bank account
-				
-				//Prompts the user for a number (1 = checking, 2 = savings)
-				int accountType = mainMenu.getNewAccountType();
-				String name = mainMenu.getNewAccountName();
-				mainMenu.createNewAccount(name, accountType);
+				mainMenu.createNew();
 			
 			}
 			
@@ -94,6 +71,36 @@ public class Menu {
 		return password;
 	}
  
+	private void viewExisting() {
+		Bank_Account currentAccount = this.getUserToSelectBankAccount();
+		int userAction = this.getUserSelectionToDepositWithdrawOrView();
+		if (userAction == 1) {
+			//Deposit
+			double deposit = this.getDepositAmount();
+			currentAccount.deposit(deposit);
+			System.out.println("Balance is now: " + currentAccount.getBalance());
+		} else if (userAction == 2) {
+			//Withdraw
+			if (currentAccount.getBalance() == 0.0) {
+				System.out.println("Account has no money to withdraw.");
+			} else {
+				double withdraw = this.getWithdrawAmount(currentAccount);
+				currentAccount.withdraw(withdraw);
+				System.out.println("Balance is now: $" + currentAccount.getBalance());
+			}
+		} else if (userAction == 3){
+			//View balance
+			System.out.println("Current balance: $" + currentAccount.getBalance());
+		}
+	}
+	
+	private void createNew() {
+		//Prompts the user for a number (1 = checking, 2 = savings)
+		int accountType = this.getNewAccountType();
+		String name = this.getNewAccountName();
+		this.createNewAccount(name, accountType);
+	}
+	
 	private int getNewAccountType() {
 		System.out.println("Type 1 to create a checking account:\nType 2 to create a savings account:\n");
 		int selection = in.nextInt();
@@ -157,7 +164,7 @@ public class Menu {
 		return accounts.get(selection-1);
 	}
 	
-	private int getUserAction() {
+	private int getUserSelectionToDepositWithdrawOrView() {
 		System.out.println("Type 1 to deposit into the account:\nType 2 to withdraw:\nType 3 to view the balance:\n");
 		int selection = in.nextInt();
 		while (selection != 1 && selection != 2 && selection != 3) {
