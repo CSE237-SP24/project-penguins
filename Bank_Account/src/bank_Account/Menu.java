@@ -14,29 +14,13 @@ public class Menu {
 		
 		user_profile profile = mainMenu.makeProfile();
 		
-		//Prompt user for a number (1 = view account, 2 = create account, 3 = quit)
-		int createOrViewSelection = mainMenu.getUserSelectionToCreateOrView();
+		//The program's main loop: continually re-prompts the user unless they quit
+		mainMenu.runMainLoop();
 		
-		//Continually re-prompts the user unless they quit
-		while (createOrViewSelection != 3) {
-			
-			//Prompts the user for a number (1 = deposit, 2 = withdraw, 3 = view balance)
-			if (createOrViewSelection == 1) {
-				//View existing bank account
-				mainMenu.viewExisting();
-				
-			} else if (createOrViewSelection == 2) {
-				//Create a new bank account
-				mainMenu.createNew();
-			
-			}
-			
-			//After desired action is completed, re-prompt user
-			createOrViewSelection = mainMenu.getUserSelectionToCreateOrView();
-		}
 		System.out.println("User has quit. Goodbye!");
 		
 	}
+	
 	
 	public Menu() {
 		this.in = new Scanner(System.in);
@@ -49,12 +33,12 @@ public class Menu {
 		String username = getUsername(newProfile);
 		String password = getPassword(newProfile);
 		newProfile.setLoginInformation(username, password);
-		System.out.println("Logged in as " + username + ".\n");
+		System.out.println("Logged in as " + username + ".");
 		return newProfile;
 	}
 	
 	private String getUsername (user_profile newProfile) {
-		System.out.println("Enter a username for your new account:\n");
+		System.out.println("Enter a username for your new account:");
 		String username = in.nextLine();
 		while (!newProfile.isValidUsername(username)) {
 			username = in.nextLine();
@@ -63,12 +47,34 @@ public class Menu {
 	}
 	
 	private String getPassword (user_profile newProfile) {
-		System.out.println("Enter a password for your new account:\n");
+		System.out.println("Enter a password for your new account:");
 		String password = in.nextLine();
 		while (!newProfile.isValidPassword(password)) {
 			password = in.nextLine();
 		}
 		return password;
+	}
+	
+	public void runMainLoop() {
+		//Prompt user for a number (1 = view account, 2 = create account, 3 = quit)
+		int createOrViewSelection = this.getUserSelectionToCreateOrView();
+		
+		while (createOrViewSelection != 3) {
+			
+			//Prompts the user for a number (1 = deposit, 2 = withdraw, 3 = view balance)
+			if (createOrViewSelection == 1) {
+				//View existing bank account
+				this.viewExisting();
+				
+			} else if (createOrViewSelection == 2) {
+				//Create a new bank account
+				this.createNew();
+			
+			}
+			
+			//After desired action is completed, re-prompt user
+			createOrViewSelection = this.getUserSelectionToCreateOrView();
+		}
 	}
  
 	private void viewExisting() {
@@ -102,10 +108,10 @@ public class Menu {
 	}
 	
 	private int getNewAccountType() {
-		System.out.println("Type 1 to create a checking account:\nType 2 to create a savings account:\n");
+		System.out.println("Type 1 to create a checking account:\nType 2 to create a savings account:");
 		int selection = in.nextInt();
 		while (selection != 1 && selection != 2) {
-			System.out.println("Invalid input. Please type 1 or 2:\n");
+			System.out.println("Invalid input. Please type 1 or 2:");
 			selection = in.nextInt();
 		}
 		return selection;
@@ -113,11 +119,11 @@ public class Menu {
 
 	
 	public void displayingOptions() {
-		System.out.println("Type 1 to view account(s): \nType 2 to create an account:\n");
+		System.out.println("Type 1 to view account(s): \nType 2 to create an account:");
 	}
 
 	public String getNewAccountName() {
-		System.out.print("Type the name of the account to be created:\n");
+		System.out.println("Type the name of the account to be created:");
 		String name = in.next();
 		return name;
 	}
@@ -136,10 +142,10 @@ public class Menu {
 	}
 	
 	public int getUserSelectionToCreateOrView() {
-		System.out.println("Type 1 to view existing accounts:\nType 2 to create an account:\nType 3 to quit the program:\n");
+		System.out.println("Type 1 to view existing accounts:\nType 2 to create an account:\nType 3 to quit the program:");
 		int selection = in.nextInt();
 		while (selection != 1 && selection != 2 && selection != 3) {
-			System.out.println("Invalid input. Please type 1, 2, or 3:\n");
+			System.out.println("Invalid input. Please type 1, 2, or 3:");
 			selection = in.nextInt();
 		}
 		if (selection == 1 && accounts.size() == 0) {
@@ -150,7 +156,7 @@ public class Menu {
 	}
 	
 	public Bank_Account getUserToSelectBankAccount() {
-		System.out.println("Select a bank account by typing the associated number:\n");
+		System.out.println("Select a bank account by typing the associated number:");
 		int counter = 0;
 		for (Bank_Account account : accounts) {
 			counter++;
@@ -158,28 +164,28 @@ public class Menu {
 		}
 		int selection = in.nextInt();
 		while (selection <= 0 || selection > counter) {
-			System.out.println("Invalid number. Try again.\n");
+			System.out.println("Invalid number. Try again.");
 			selection = in.nextInt();
 		}
 		return accounts.get(selection-1);
 	}
 	
 	private int getUserSelectionToDepositWithdrawOrView() {
-		System.out.println("Type 1 to deposit into the account:\nType 2 to withdraw:\nType 3 to view the balance:\n");
+		System.out.println("Type 1 to deposit into the account:\nType 2 to withdraw:\nType 3 to view the balance:");
 		int selection = in.nextInt();
 		while (selection != 1 && selection != 2 && selection != 3) {
-			System.out.println("Invalid input. Please type 1, 2, or 3:\n");
+			System.out.println("Invalid input. Please type 1, 2, or 3:");
 			selection = in.nextInt();
 		}
 		return selection;
 	}
 	
 	public double getDepositAmount() {
-		System.out.println("How much would you like to deposit?:\n");
+		System.out.println("How much would you like to deposit?:");
 		double amount = in.nextDouble();
 
 		while (amount < 0) {
-			System.out.println("How much would you like to deposit (must be positive)?:\n");
+			System.out.println("How much would you like to deposit (must be positive)?:");
 			amount = in.nextDouble();
 		}
 
@@ -188,11 +194,11 @@ public class Menu {
 
 	
 	public double getWithdrawAmount(Bank_Account account) {
-		System.out.println("How much would you like to withdraw?:\n");
+		System.out.println("How much would you like to withdraw?:");
 		double amount = in.nextDouble();
 
 		while (amount < 0 || amount > account.getBalance()) {
-			System.out.println("How much would you like to deposit (must be positive and less than current balance)?:\n");
+			System.out.println("How much would you like to deposit (must be positive and less than current balance)?:");
 			amount = in.nextDouble();
 		}
 
