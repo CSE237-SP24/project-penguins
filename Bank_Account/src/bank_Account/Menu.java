@@ -7,12 +7,13 @@ import user_information.user_profile;
 public class Menu {
 
 	private Scanner in;
-	private ArrayList<Bank_Account> accounts;
+	private user_profile profile;
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
 		
 		user_profile profile = mainMenu.makeProfile();
+		mainMenu.addProfile(profile);
 		
 		//The program's main loop: continually re-prompts the user unless they quit
 		mainMenu.runMainLoop();
@@ -24,7 +25,11 @@ public class Menu {
 	
 	public Menu() {
 		this.in = new Scanner(System.in);
-		this.accounts = new ArrayList<Bank_Account>();
+		this.profile = null;
+	}
+	
+	private void addProfile(user_profile profile) {
+		this.profile = profile;
 	}
 
 	
@@ -132,12 +137,13 @@ public class Menu {
 		if (accountType == 1) {
 			//Checkings account
 			Bank_Account account = new Bank_Account(name);
-			accounts.add(account);
+			profile.getAllBankAccounts().add(account);
 		} else {
 			//Savings account
 			SavingsAccount account = new SavingsAccount(name, 0.1, 10000);
-			accounts.add(account);
+			profile.getAllBankAccounts().add(account);
 		}
+	
 	
 	}
 	
@@ -148,7 +154,7 @@ public class Menu {
 			System.out.println("Invalid input. Please type 1, 2, or 3:");
 			selection = in.nextInt();
 		}
-		if (selection == 1 && accounts.size() == 0) {
+		if (selection == 1 && profile.getAllBankAccounts().size() == 0) {
 			System.out.println("There are no accounts to view. Please create an account first.");
 			return 2;
 		}
@@ -158,7 +164,7 @@ public class Menu {
 	public Bank_Account getUserToSelectBankAccount() {
 		System.out.println("Select a bank account by typing the associated number:");
 		int counter = 0;
-		for (Bank_Account account : accounts) {
+		for (Bank_Account account : profile.getAllBankAccounts()) {
 			counter++;
 			System.out.println(counter + " " + account.name);
 		}
@@ -167,7 +173,7 @@ public class Menu {
 			System.out.println("Invalid number. Try again.");
 			selection = in.nextInt();
 		}
-		return accounts.get(selection-1);
+		return profile.getAllBankAccounts().get(selection-1);
 	}
 	
 	private int getUserSelectionToDepositWithdrawOrView() {

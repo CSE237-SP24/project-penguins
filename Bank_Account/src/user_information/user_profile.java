@@ -27,7 +27,7 @@ public class user_profile {
 	private ArrayList<String> filingCharacters;
 
 	// Users Bank Accounts
-	ArrayList<Bank_Account> allBankAccounts = new ArrayList<Bank_Account>();
+	private ArrayList<Bank_Account> allBankAccounts = new ArrayList<Bank_Account>();
 
 	// default userProfile constructor
 	public user_profile() {
@@ -209,6 +209,14 @@ public class user_profile {
 		} // checks to make sure the password has a special character
 
 		return true;
+	}
+
+	public ArrayList<Bank_Account> getAllBankAccounts() {
+		return allBankAccounts;
+	}
+
+	public void setAllBankAccounts(ArrayList<Bank_Account> allBankAccounts) {
+		this.allBankAccounts = allBankAccounts;
 	}
 
 }
