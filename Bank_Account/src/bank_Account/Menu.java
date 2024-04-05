@@ -1,47 +1,49 @@
+
 package bank_Account;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import user_information.user_profile;
 
 public class Menu {
 
 	private Scanner in;
-	private user_profile profile;
+	private user_profile currentProfile;
+	private ArrayList<user_profile> profileList;
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
 
-		user_profile profile = mainMenu.makeProfile();
-		mainMenu.addProfile(profile);
+		mainMenu.makeProfile();
 
 		// The program's main loop: continually re-prompts the user unless they quit
 		mainMenu.runMainLoop();
-
-		System.out.println("User has quit. Goodbye!");
 
 	}
 
 	public Menu() {
 		this.in = new Scanner(System.in);
-		this.profile = null;
+		this.currentProfile = null;
+		this.profileList = new ArrayList<user_profile>();
 	}
 
 	private void addProfile(user_profile profile) {
-		this.profile = profile;
+		this.profileList.add(profile);
+		this.currentProfile = profile;
 	}
 
-	private user_profile makeProfile() {
+	private void makeProfile() {
 		user_profile newProfile = new user_profile();
 		String username = getUsername(newProfile);
 		String password = getPassword(newProfile);
 		newProfile.setLoginInformation(username, password);
+		this.addProfile(newProfile);
 		System.out.println("Logged in as " + username + ".");
-		return newProfile;
 	}
 
 	private String getUsername(user_profile newProfile) {
 		System.out.println("Enter a username for your new account:");
-		String username = in.nextLine();
+		String username = in.next();
 		while (!newProfile.isValidUsername(username)) {
 			username = in.nextLine();
 		}
@@ -50,7 +52,7 @@ public class Menu {
 
 	private String getPassword(user_profile newProfile) {
 		System.out.println("Enter a password for your new account:");
-		String password = in.nextLine();
+		String password = in.next();
 		while (!newProfile.isValidPassword(password)) {
 			password = in.nextLine();
 		}
@@ -58,12 +60,11 @@ public class Menu {
 	}
 
 	public void runMainLoop() {
-		// Prompt user for a number (1 = view account, 2 = create account, 3 = quit)
+		// Prompt user for a number (1 = view account, 2 = create account, 3 = logout, 4 = quit)
 		int createOrViewSelection = this.getUserSelectionToCreateOrView();
 
-		while (createOrViewSelection != 3) {
+		while (createOrViewSelection != 4) {
 
-			// Prompts the user for a number (1 = deposit, 2 = withdraw, 3 = view balance)
 			if (createOrViewSelection == 1) {
 				// View existing bank account
 				this.viewExisting();
@@ -72,12 +73,81 @@ public class Menu {
 				// Create a new bank account
 				this.createNew();
 
+			} else if (createOrViewSelection == 3) {
+				this.logOut();
 			}
 
 			// After desired action is completed, re-prompt user
 			createOrViewSelection = this.getUserSelectionToCreateOrView();
 		}
+		
+		System.out.println("User has quit. Goodbye!");
 	}
+
+	private void logOut() {
+		System.out.println("Type 1 to log into an existing account:\nType 2 to create a new account:");
+		int selection = getValidInt();
+		while (selection != 1 && selection != 2) {
+			System.out.println("Invalid input. Please type 1 or 2:");
+			selection = getValidInt();
+		}
+		if (selection == 1) {
+			user_profile attemptLogin = this.logIn();
+			this.attemptLogin(attemptLogin);
+		} else if (selection == 2) {
+			this.makeProfile();
+		}
+	}
+	
+	private void attemptLogin(user_profile attemptLogin) {
+		System.out.println("Enter the password for this account:");
+		String password = in.next();
+		while (!this.isActualPassword(attemptLogin, password)) {
+			System.out.println("Not the correct password. Try again:");
+			password = in.next();
+		}
+		this.currentProfile = attemptLogin;
+	}
+	
+	private boolean isActualPassword(user_profile attemptLogin, String enteredPassword) {
+		for (String p : attemptLogin.getLoginInformation().values()) {
+		    if (p.equals(enteredPassword)) {
+		    	return true;
+		    }
+		}
+		return false;
+
+	}
+
+	private user_profile logIn() {
+		System.out.println("Select an account to login by typing the associated number:");
+		int counter = 0;
+		for (user_profile account : profileList) {
+			counter++;
+			System.out.print(counter + " ");
+			for (String username : account.getLoginInformation().keySet()) {
+			    System.out.println(username);
+			}
+		}
+		int selection = getValidInt();
+		while (selection <= 0 || selection > counter) {
+			System.out.println("Invalid number. Try again.");
+			selection = getValidInt();
+		}
+		return profileList.get(selection - 1);
+		
+	}
+	
+	private boolean isExistingUsername(String username) {
+		for (user_profile profile : profileList) {
+			if (profile.getLoginInformation().containsKey(username)) {
+				return true;
+			}
+		}
+		System.out.println("Username does not exist. Try again:");
+		return false;
+	}
+
 
 	private void viewExisting() {
 		Bank_Account currentAccount = this.getUserToSelectBankAccount();
@@ -86,11 +156,11 @@ public class Menu {
 			// Deposit
 			double deposit = this.getDepositAmount();
 			currentAccount.deposit(deposit);
-			System.out.println("Balance is now: " + currentAccount.getBalance());
+			System.out.println("Balance is now: $" + currentAccount.getBalance());
 		} else if (userAction == 2) {
 			// Withdraw
 			if (currentAccount.getBalance() == 0.0) {
-				System.out.println("Account has no money to withdraw.");
+				System.out.println("Bank account has no money to withdraw.");
 			} else {
 				double withdraw = this.getWithdrawAmount(currentAccount);
 				currentAccount.withdraw(withdraw);
@@ -119,48 +189,47 @@ public class Menu {
 		return selection;
 	}
 
-	public void displayingOptions() {
-		System.out.println("Type 1 to view account(s): \nType 2 to create an account:");
+	private void displayingOptions() {
+		System.out.println("Type 1 to view bank account(s): \nType 2 to create an bank account:");
 	}
 
-	public String getNewAccountName() {
-		System.out.println("Type the name of the account to be created:");
+	private String getNewAccountName() {
+		System.out.println("Type the name of the bank account to be created:");
 		String name = in.next();
 		return name;
 	}
 
-	public void createNewAccount(String name, int accountType) {
+	private void createNewAccount(String name, int accountType) {
 		if (accountType == 1) {
 			// Checkings account
 			Bank_Account account = new Bank_Account(name);
-			profile.getAllBankAccounts().add(account);
+			currentProfile.getAllBankAccounts().add(account);
 		} else {
 			// Savings account
 			SavingsAccount account = new SavingsAccount(name, 0.1, 10000);
-			profile.getAllBankAccounts().add(account);
+			currentProfile.getAllBankAccounts().add(account);
 		}
 
 	}
 
-	public int getUserSelectionToCreateOrView() {
-		System.out.println(
-				"Type 1 to view existing accounts:\nType 2 to create an account:\nType 3 to quit the program:");
+	private int getUserSelectionToCreateOrView() {
+		System.out.println("Type 1 to view existing bank accounts:\nType 2 to create a bank account:\nType 3 to log out:\nType 4 to quit the program:");
 		int selection = getValidInt();
-		while (selection != 1 && selection != 2 && selection != 3) {
-			System.out.println("Invalid input. Please type 1, 2, or 3:");
+		while (selection != 1 && selection != 2 && selection != 3 && selection != 4) {
+			System.out.println("Invalid input. Please type 1, 2, 3, or 4:");
 			selection = getValidInt();
 		}
-		if (selection == 1 && profile.getAllBankAccounts().size() == 0) {
-			System.out.println("There are no accounts to view. Please create an account first.");
+		if (selection == 1 && currentProfile.getAllBankAccounts().size() == 0) {
+			System.out.println("There are no bank accounts to view. Please create a bank account first.");
 			return 2;
 		}
 		return selection;
 	}
 
-	public Bank_Account getUserToSelectBankAccount() {
+	private Bank_Account getUserToSelectBankAccount() {
 		System.out.println("Select a bank account by typing the associated number:");
 		int counter = 0;
-		for (Bank_Account account : profile.getAllBankAccounts()) {
+		for (Bank_Account account : currentProfile.getAllBankAccounts()) {
 			counter++;
 			System.out.println(counter + " " + account.name);
 		}
@@ -169,11 +238,11 @@ public class Menu {
 			System.out.println("Invalid number. Try again.");
 			selection = getValidInt();
 		}
-		return profile.getAllBankAccounts().get(selection - 1);
+		return currentProfile.getAllBankAccounts().get(selection - 1);
 	}
 
 	private int getUserSelectionToDepositWithdrawOrView() {
-		System.out.println("Type 1 to deposit into the account:\nType 2 to withdraw:\nType 3 to view the balance:");
+		System.out.println("Type 1 to deposit into the bank account:\nType 2 to withdraw:\nType 3 to view the balance:");
 		int selection = getValidInt();
 		while (selection != 1 && selection != 2 && selection != 3) {
 			System.out.println("Invalid input. Please type 1, 2, or 3:");
@@ -182,19 +251,19 @@ public class Menu {
 		return selection;
 	}
 
-	public double getDepositAmount() {
-		System.out.println("How much would you like to deposit?:");
+	private double getDepositAmount() {
+		System.out.println("How much would you like to deposit?");
 		double amount = getValidDouble();
 
 		while (amount < 0) {
-			System.out.println("How much would you like to deposit (must be positive)?:");
+			System.out.println("How much would you like to deposit (must be positive)?");
 			amount = getValidDouble();
 		}
 
 		return amount;
 	}
 
-	public double getWithdrawAmount(Bank_Account account) {
+	private double getWithdrawAmount(Bank_Account account) {
 		System.out.println("How much would you like to withdraw?:");
 		double amount = getValidDouble();
 
@@ -206,7 +275,7 @@ public class Menu {
 		return amount;
 	}
 
-	public int getValidInt() {
+	private int getValidInt() {
 		int selection;
 		while (true) {
 			String input = in.next();
@@ -219,7 +288,7 @@ public class Menu {
 		}
 	}
 
-	public double getValidDouble() {
+	private double getValidDouble() {
 		double selection;
 		while (true) {
 			String input = in.next();
