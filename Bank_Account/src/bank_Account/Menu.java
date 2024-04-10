@@ -4,7 +4,8 @@ package bank_Account;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import javax.sound.sampled.AudioInputStream;
@@ -14,19 +15,20 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import user_information.user_profile;
-
+import Utility.Pair;
+import Utility.ParserUtils;
 public class Menu extends Thread{
 
 	private Scanner in;
 	private user_profile currentProfile;
-	private ArrayList<user_profile> profileList;
-
+	private Map< Pair<String, String>, user_profile> profileList;
+	private ParserUtils parse;
 
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
 		distributeThreads();
-
+		
 		mainMenu.makeProfile();
 
 		// The program's main loop: continually re-prompts the user unless they quit
@@ -40,17 +42,25 @@ public class Menu extends Thread{
 	public Menu() {
 		this.in = new Scanner(System.in);
 		this.currentProfile = null;
-		this.profileList = new ArrayList<user_profile>();
+		this.profileList = new HashMap<Pair<String, String>, user_profile>();
+		this.parse = new ParserUtils();
 	}
 
 	private void addProfile(user_profile profile) {
-		this.profileList.add(profile);
+		
+		Pair<String, String> userAndPass = profile.getLoginInformation();
+		
+		
+		
+		this.profileList.put(new Pair<String, String>(userAndPass.first(),
+				userAndPass.second()), profile);
+		
 		this.currentProfile = profile;
 	}
 
 	//used to start the song thread and the menu thread
 	public static void distributeThreads(){
-		System.out.println("Please turn on your sound if you wish to hear our background track");
+		System.out.println("Please turn on your sound TO THE MAX if you wish to hear our background track");
 		Menu main = new Menu();
 		main.start();
 
@@ -75,7 +85,7 @@ public class Menu extends Thread{
 					return;
 				}
 			} else {
-				System.out.println("The music file can't be found!!");
+				System.out.println("Sound is still being integrated for all operating systems, please use a different computer or audio system.");
 				System.out.println(System.getProperty("user.dir"));
 			}
 	}
@@ -149,31 +159,29 @@ public class Menu extends Thread{
 
 	private void makeProfile() {
 		user_profile newProfile = new user_profile();
-		String username = getUsername(newProfile);
-		String password = getPassword(newProfile);
-		newProfile.setLoginInformation(username, password);
+		Pair<String, String> userAndPass = getUserAndPass(newProfile);
+		newProfile.setLoginInformation(userAndPass.first(),userAndPass.second());
 		this.addProfile(newProfile);
-		System.out.println("Logged in as " + username + ".");
+		System.out.println("Logged in as " + userAndPass.first() + ".");
 	}
 
-	private String getUsername(user_profile newProfile) {
+	private Pair<String, String> getUserAndPass(user_profile newProfile) {
 		System.out.println("Enter a username for your new account:");
-		String username = in.next();
-		while (!newProfile.isValidUsername(username)) {
-			username = in.nextLine();
-		}
-		return username;
-	}
-
-	private String getPassword(user_profile newProfile) {
+		String username = in.nextLine();
 		System.out.println("Enter a password for your new account:");
-		String password = in.next();
-		while (!newProfile.isValidPassword(password)) {
+		String password = in.nextLine();
+		
+		while (!newProfile.isValidUsername(username) || !newProfile.isValidPassword(password))  {
+			username = in.nextLine();
 			password = in.nextLine();
 		}
-		return password;
+		
+		
+		
+		return new Pair<String, String>(username, password);
 	}
 
+	
 	public void runMainLoop() {
 		// Prompt user for a number (1 = view account, 2 = create account, 3 = logout, 4 = quit)
 		int createOrViewSelection = this.getUserSelectionToCreateOrView();
@@ -201,67 +209,55 @@ public class Menu extends Thread{
 
 	private void logOut() {
 		System.out.println("Type 1 to log into an existing account:\nType 2 to create a new account:");
-		int selection = getValidInt();
+		int selection = parse.getValidInt();
 		while (selection != 1 && selection != 2) {
 			System.out.println("Invalid input. Please type 1 or 2:");
-			selection = getValidInt();
+			selection = parse.getValidInt();
 		}
 		if (selection == 1) {
-			user_profile attemptLogin = this.logIn();
-			this.attemptLogin(attemptLogin);
+			
+			this.currentProfile = this.logIn();
+			
 		} else if (selection == 2) {
 			this.makeProfile();
 		}
 	}
 	
-	private void attemptLogin(user_profile attemptLogin) {
-		System.out.println("Enter the password for this account:");
-		String password = in.next();
-		while (!this.isActualPassword(attemptLogin, password)) {
-			System.out.println("Not the correct password. Try again:");
-			password = in.next();
-		}
-		this.currentProfile = attemptLogin;
-	}
-	
-	private boolean isActualPassword(user_profile attemptLogin, String enteredPassword) {
-		for (String p : attemptLogin.getLoginInformation().values()) {
-		    if (p.equals(enteredPassword)) {
-		    	return true;
-		    }
-		}
-		return false;
-
-	}
 
 	private user_profile logIn() {
-		System.out.println("Select an account to login by typing the associated number:");
+		System.out.println("Select an account to login by typing the associated username:");
 		int counter = 0;
-		for (user_profile account : profileList) {
+		for (user_profile account : profileList.values()) {
 			counter++;
+			
 			System.out.print(counter + " ");
-			for (String username : account.getLoginInformation().keySet()) {
-			    System.out.println(username);
-			}
+			
+			System.out.println(account.getLoginInformation().first());
+			
 		}
-		int selection = getValidInt();
-		while (selection <= 0 || selection > counter) {
-			System.out.println("Invalid number. Try again.");
-			selection = getValidInt();
+		String user = in.next();
+		
+		System.out.print("Input the password associated with this username.");
+		Pair<String, String> userAndPass = new Pair<String,String>(user, in.next());
+		System.out.println(userAndPass);
+		System.out.println(this.profileList.keySet());
+		while(!this.profileList.keySet().contains(userAndPass)) {
+			
+			System.out.println("incorrect username or password, input user name ");
+		    user = in.next();
+			
+			System.out.print("Input the password associated with this username.");
+			userAndPass = new Pair<String,String>(user, in.next());
+			
+			
 		}
-		return profileList.get(selection - 1);
+			
+		
+		return this.profileList.get(userAndPass);
 		
 	}
 	
-	private boolean isExistingUsername(String username) {
-		for (user_profile profile : profileList) {
-			if (profile.getLoginInformation().containsKey(username)) {
-				return true;
-			}
-		}
-		System.out.println("Username does not exist. Try again:");
-		return false;
-	}
+	
 
 
 	private void viewExisting() {
@@ -269,16 +265,31 @@ public class Menu extends Thread{
 		int userAction = this.getUserSelectionToDepositWithdrawOrView();
 		if (userAction == 1) {
 			// Deposit
-			double deposit = this.getDepositAmount();
+			System.out.println("How much would you like to deposit?");
+			double deposit = parse.getValidDouble();
+			
+			try {
+			
 			currentAccount.deposit(deposit);
+			}
+			catch(IllegalArgumentException e) {
+				System.out.println("Invalid Amount, please try again");
+			}
+			
 			System.out.println("Balance is now: $" + currentAccount.getBalance());
 		} else if (userAction == 2) {
 			// Withdraw
 			if (currentAccount.getBalance() == 0.0) {
 				System.out.println("Bank account has no money to withdraw.");
 			} else {
-				double withdraw = this.getWithdrawAmount(currentAccount);
-				currentAccount.withdraw(withdraw);
+				System.out.println("How much would you like to withdraw?:");
+				double withdraw = parse.getValidDouble();
+				try {
+					currentAccount.withdraw(withdraw);
+				}catch(IllegalArgumentException e) {
+					System.out.println("Invalid Amount, please try again");
+				}
+				
 				System.out.println("Balance is now: $" + currentAccount.getBalance());
 			}
 		} else if (userAction == 3) {
@@ -289,30 +300,24 @@ public class Menu extends Thread{
 
 	private void createNew() {
 		// Prompts the user for a number (1 = checking, 2 = savings)
-		int accountType = this.getNewAccountType();
-		String name = this.getNewAccountName();
-		this.createNewAccount(name, accountType);
-	}
-
-	private int getNewAccountType() {
 		System.out.println("Type 1 to create a checking account:\nType 2 to create a savings account:");
-		int selection = getValidInt();
+		int selection = parse.getValidInt();
+		
 		while (selection != 1 && selection != 2) {
 			System.out.println("Invalid input. Please type 1 or 2:");
-			selection = getValidInt();
+			selection = parse.getValidInt();
 		}
-		return selection;
-	}
-
-	private void displayingOptions() {
-		System.out.println("Type 1 to view bank account(s): \nType 2 to create an bank account:");
-	}
-
-	private String getNewAccountName() {
+		
+		
 		System.out.println("Type the name of the bank account to be created:");
 		String name = in.next();
-		return name;
+		
+		this.createNewAccount(name, selection);
 	}
+
+	
+	
+	
 
 	private void createNewAccount(String name, int accountType) {
 		if (accountType == 1) {
@@ -329,10 +334,10 @@ public class Menu extends Thread{
 
 	private int getUserSelectionToCreateOrView() {
 		System.out.println("Type 1 to view existing bank accounts:\nType 2 to create a bank account:\nType 3 to log out:\nType 4 to quit the program:");
-		int selection = getValidInt();
+		int selection = parse.getValidInt();
 		while (selection != 1 && selection != 2 && selection != 3 && selection != 4) {
 			System.out.println("Invalid input. Please type 1, 2, 3, or 4:");
-			selection = getValidInt();
+			selection = parse.getValidInt();
 		}
 		if (selection == 1 && currentProfile.getAllBankAccounts().size() == 0) {
 			System.out.println("There are no bank accounts to view. Please create a bank account first.");
@@ -348,72 +353,30 @@ public class Menu extends Thread{
 			counter++;
 			System.out.println(counter + " " + account.name);
 		}
-		int selection = getValidInt();
+		
+		int selection = parse.getValidInt();
+		
 		while (selection <= 0 || selection > counter) {
+			
 			System.out.println("Invalid number. Try again.");
-			selection = getValidInt();
+			
+			selection = parse.getValidInt();
+			
 		}
+		
 		return currentProfile.getAllBankAccounts().get(selection - 1);
 	}
 
 	private int getUserSelectionToDepositWithdrawOrView() {
 		System.out.println("Type 1 to deposit into the bank account:\nType 2 to withdraw:\nType 3 to view the balance:");
-		int selection = getValidInt();
+		int selection = parse.getValidInt();
 		while (selection != 1 && selection != 2 && selection != 3) {
 			System.out.println("Invalid input. Please type 1, 2, or 3:");
-			selection = getValidInt();
+			selection = parse.getValidInt();
 		}
 		return selection;
 	}
 
-	private double getDepositAmount() {
-		System.out.println("How much would you like to deposit?");
-		double amount = getValidDouble();
-
-		while (amount < 0) {
-			System.out.println("How much would you like to deposit (must be positive)?");
-			amount = getValidDouble();
-		}
-
-		return amount;
-	}
-
-	private double getWithdrawAmount(Bank_Account account) {
-		System.out.println("How much would you like to withdraw?:");
-		double amount = getValidDouble();
-
-		while (amount < 0 || amount > account.getBalance()) {
-			System.out.println("How much would you like to deposit (must be positive and less than current balance)?:");
-			amount = getValidDouble();
-		}
-
-		return amount;
-	}
-
-	private int getValidInt() {
-		int selection;
-		while (true) {
-			String input = in.next();
-			try {
-				selection = Integer.parseInt(input);
-				return selection;
-			} catch (NumberFormatException ne) {
-				System.out.println("Invalid input. Please enter a number:");
-			}
-		}
-	}
-
-	private double getValidDouble() {
-		double selection;
-		while (true) {
-			String input = in.next();
-			try {
-				selection = Double.parseDouble(input);
-				return selection;
-			} catch (NumberFormatException ne) {
-				System.out.println("Invalid input. Please enter a number:");
-			}
-		}
-	}
-
+	
+	
 }

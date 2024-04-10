@@ -7,11 +7,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 import bank_Account.*;
-
+import Utility.Pair;
 public class user_profile {
 
 	// Components of a user_profile (currently used fields)
-	private HashMap<String, String> loginInformation;
+	private Pair<String,String> loginInformation;
 
 	// Other account fields
 	private String dateOfBirth;
@@ -35,8 +35,8 @@ public class user_profile {
 		this.firstName = "No First Name.";
 		this.lastName = "No Last Name.";
 
-		this.loginInformation = new HashMap<String, String>();
-		this.loginInformation.put("No Username", "No Password");
+		this.loginInformation = new Pair<String, String>("No Username", "No Password");
+		
 		this.dateOfBirth = "No Date Of Birth has been Inputted.";
 		this.securityQuestion = "No Security Question has been Inputted.";
 		this.securityQuestionAnswer = "No Security Answer has been Inputted.";
@@ -54,7 +54,7 @@ public class user_profile {
 	 * getLoginInformation
 	 * returns login information for a given user (username, password)
 	 */
-	public HashMap<String, String> getLoginInformation() {
+	public Pair<String, String> getLoginInformation() {
 
 		return this.loginInformation;
 	}
@@ -79,8 +79,8 @@ public class user_profile {
 			return false;
 		}
 		// updates the username and password field if both are valid
-		HashMap<String, String> newLoginInformation = new HashMap<>();
-		newLoginInformation.put(userName, passWord);
+		Pair<String, String> newLoginInformation = new Pair<>(userName, passWord);
+		
 		this.loginInformation = newLoginInformation;
 		System.out.println("Username and Password Successfuly Generated and Recorded");
 		return true;
