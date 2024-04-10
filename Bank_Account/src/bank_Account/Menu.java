@@ -1,8 +1,16 @@
 
 package bank_Account;
 
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+
 import user_information.user_profile;
 
 public class Menu extends Thread{
@@ -38,8 +46,8 @@ public class Menu extends Thread{
 	}
 
 	//used to start the song thread and the menu thread
-	public void distributeThreads(){
-		Main main = new Main();
+	public static void distributeThreads(){
+		Menu main = new Menu();
 		main.start();
 
 	}
