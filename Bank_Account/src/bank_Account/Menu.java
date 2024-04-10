@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 import user_information.user_profile;
 
@@ -48,7 +50,7 @@ public class Menu extends Thread{
 
 	//used to start the song thread and the menu thread
 	public static void distributeThreads(){
-		System.out.println("Please turn on your sound if you wish to hear our background track")
+		System.out.println("Please turn on your sound if you wish to hear our background track");
 		Menu main = new Menu();
 		main.start();
 
@@ -58,13 +60,13 @@ public class Menu extends Thread{
 		songPlayerCycler();
 	}
 	public void songPlayerCycler(){
-=
+
 //play the song during program execution
-		String chosenSong = "/src/soundFiles/battletheme10.wav";
+		String chosenSong = "soundFiles/battletheme10.wav";
 
 		File songFile = new File(chosenSong);
 			if (songFile.exists()) {
-				AudioInputStream musicPlayerSystem = getAudioInputStreamFromFile();
+				AudioInputStream musicPlayerSystem = getAudioInputStreamFromFile(songFile);
 				if(musicPlayerSystem != null) {
 					Clip audioClip = getClipFromFile();
 					processSong(audioClip,musicPlayerSystem);
@@ -74,6 +76,7 @@ public class Menu extends Thread{
 				}
 			} else {
 				System.out.println("The music file can't be found!!");
+				System.out.println(System.getProperty("user.dir"));
 			}
 	}
 
@@ -105,10 +108,13 @@ public class Menu extends Thread{
 	 * @params none
 	 * preps the AudioInputStream for playing the song
 	 */
-	public AudioInputStream getAudioInputStreamFromFile(){
+	public AudioInputStream getAudioInputStreamFromFile(File songFile){
 		AudioInputStream musicPlayerSystem = null;// song
+		
+		
+	
 		try {
-			musicPlayerSystem = AudioSystem.getAudioInputStream(this.songFile);
+			musicPlayerSystem = AudioSystem.getAudioInputStream(songFile);
 			return musicPlayerSystem;
 		} catch (UnsupportedAudioFileException sampleAudioException) {
 			System.out.println("Your audio system is incompatible with our application, apologies for the inconvenience.");
