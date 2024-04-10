@@ -36,15 +36,15 @@ NOTE: All code is currently in the **dev branch**
 
 **During this iteration, we accomplished the following:**
 - enabled background music with one availible (for now) track. (Useability may depend on updated version of Java and can be hardware dependent.)
- -- added tests for sound in menu class
+ -- added tests for sound in `Menu` class
 - Users can make multiple accounts, and can log in and out of them at will.
 - majorly refactored main, created utility classes and changed how username and passwords are stored to help in following best coding practices.
-  -- added test suite for Pair class, other ParseUtils class is entirely dependent on user input, and all user input is self contained within the class, so no test suites are possible.
+  -- added test suite for `Pair` class, other `ParseUtils` class is entirely dependent on user input, and all user input is self contained within the class, so no test suites are possible.
 
 **For our next interation, we intend to**
-- Create a cleaner interface for the menu object, so that much of the menu can be boiled down to less hard coded menus.
+- Create a cleaner interface for the `Menu` class, so that much of the menu can be boiled down to less hard coded menus.
 - Expand library of music choices, and allow user to choose music from a curated list. 
-- Expand usage of Bank_Account classes, e.g. Savings Accounts have interest applied over time and have a withdrawal limit set based on total money in the account.
+- Expand usage of `Bank_Account` classes, e.g. `Savings_Accounts` have interest applied over time and have a withdrawal limit set based on total money in the account.
 - Create new utility classes to help reduce code density, and do away with repetitive code throughout the code base.
 
 **Is there anything we've implemented that doesn't work?**
