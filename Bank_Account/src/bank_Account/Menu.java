@@ -30,6 +30,7 @@ public class Menu extends Thread{
 		// The program's main loop: continually re-prompts the user unless they quit
 		mainMenu.runMainLoop();
 
+		//ends both the song and bank account threads
 		System.exit(0);
 
 	}
@@ -47,6 +48,7 @@ public class Menu extends Thread{
 
 	//used to start the song thread and the menu thread
 	public static void distributeThreads(){
+		System.out.println("Please turn on your sound if you wish to hear our background track")
 		Menu main = new Menu();
 		main.start();
 
@@ -56,9 +58,7 @@ public class Menu extends Thread{
 		songPlayerCycler();
 	}
 	public void songPlayerCycler(){
-//      songPlayer currentSong = new songPlayer(Integer.parseInt("0"));
-//       currentSong.prepSong();
-
+=
 //play the song during program execution
 		String chosenSong = "/src/soundFiles/battletheme10.wav";
 
@@ -76,7 +76,6 @@ public class Menu extends Thread{
 				System.out.println("The music file can't be found!!");
 			}
 	}
-
 
 	/* processSong
 	 * @params an AudioClip System and an AudioInputStream
@@ -102,11 +101,45 @@ public class Menu extends Thread{
 	}
 
 
+	/* getAudioInputStreamFromFile
+	 * @params none
+	 * preps the AudioInputStream for playing the song
+	 */
+	public AudioInputStream getAudioInputStreamFromFile(){
+		AudioInputStream musicPlayerSystem = null;// song
+		try {
+			musicPlayerSystem = AudioSystem.getAudioInputStream(this.songFile);
+			return musicPlayerSystem;
+		} catch (UnsupportedAudioFileException sampleAudioException) {
+			System.out.println("Your audio system is incompatible with our application, apologies for the inconvenience.");
+			return null;
+
+		} catch (IOException fileNotFound) {
+			System.out.println("The required audio files were unable to be rendered in the program.");
+			return null;
+
+		}
+
+	}
+
+	/* getClipFromFile
+	 * @params none
+	 * preps the clip for playing the song
+	 */
+	public Clip getClipFromFile(){
+		Clip audioClip= null;
+		try {
+			audioClip = AudioSystem.getClip();
+			return audioClip;
+		} catch (LineUnavailableException clipUnableToBeCreated) {
+			System.out.println("The required audio system java libraries were unable to be rendered in the program.");
+			return null;
+		}
 
 
+	}
 
-
-
+	//bank account functionality thread
 
 	private void makeProfile() {
 		user_profile newProfile = new user_profile();
