@@ -5,19 +5,24 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import user_information.user_profile;
 
-public class Menu {
+public class Menu extends Thread{
 
 	private Scanner in;
 	private user_profile currentProfile;
 	private ArrayList<user_profile> profileList;
 
+
+
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
+		distributeThreads();
 
 		mainMenu.makeProfile();
 
 		// The program's main loop: continually re-prompts the user unless they quit
 		mainMenu.runMainLoop();
+
+		System.exit(0);
 
 	}
 
@@ -31,6 +36,69 @@ public class Menu {
 		this.profileList.add(profile);
 		this.currentProfile = profile;
 	}
+
+	//used to start the song thread and the menu thread
+	public void distributeThreads(){
+		Main main = new Main();
+		main.start();
+
+	}
+	//song playing thread
+	public void run(){
+		songPlayerCycler();
+	}
+	public void songPlayerCycler(){
+//      songPlayer currentSong = new songPlayer(Integer.parseInt("0"));
+//       currentSong.prepSong();
+
+//play the song during program execution
+		String chosenSong = "/src/soundFiles/battletheme10.wav";
+
+		File songFile = new File(chosenSong);
+			if (songFile.exists()) {
+				AudioInputStream musicPlayerSystem = getAudioInputStreamFromFile();
+				if(musicPlayerSystem != null) {
+					Clip audioClip = getClipFromFile();
+					processSong(audioClip,musicPlayerSystem);
+				}
+				else {
+					return;
+				}
+			} else {
+				System.out.println("The music file can't be found!!");
+			}
+	}
+
+
+	/* processSong
+	 * @params an AudioClip System and an AudioInputStream
+	 * preps the program for playing the song and starts the clip
+	 */
+	public void processSong(Clip audioClip,AudioInputStream musicPlayerSystem ){
+		try {
+			audioClip.open(musicPlayerSystem);
+		} catch (LineUnavailableException clipUnableToBeRendered) {
+			System.out.println("The required audio system java libraries were unable to be rendered in the program.");
+			return;
+		} catch (IOException fileNotPresent) {
+			System.out.println("The required audio files were unable to be rendered in the program.");
+			return;
+		}
+
+		while(true) {
+			//start the song
+			audioClip.start();
+			audioClip.loop(audioClip.LOOP_CONTINUOUSLY);
+		}
+
+	}
+
+
+
+
+
+
+
 
 	private void makeProfile() {
 		user_profile newProfile = new user_profile();
