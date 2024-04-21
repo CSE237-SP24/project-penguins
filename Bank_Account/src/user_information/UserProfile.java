@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.regex.Pattern;
 import bank_Account.*;
 import Utility.Pair;
-public class user_profile {
+public class UserProfile {
 
 	// Components of a user_profile (currently used fields)
 	private Pair<String,String> loginInformation;
@@ -30,7 +30,7 @@ public class user_profile {
 	private ArrayList<Bank_Account> allBankAccounts = new ArrayList<Bank_Account>();
 
 	// default userProfile constructor
-	public user_profile() {
+	public UserProfile() {
 
 		this.firstName = "No First Name.";
 		this.lastName = "No Last Name.";

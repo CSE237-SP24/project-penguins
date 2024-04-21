@@ -14,14 +14,14 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-import user_information.user_profile;
+import user_information.UserProfile;
 import Utility.Pair;
 import Utility.ParserUtils;
 public class Menu extends Thread{
 
 	private Scanner in;
-	private user_profile currentProfile;
-	private Map< Pair<String, String>, user_profile> profileList;
+	private UserProfile currentProfile;
+	private Map< Pair<String, String>, UserProfile> profileList;
 	private ParserUtils parse;
 
 
@@ -42,11 +42,11 @@ public class Menu extends Thread{
 	public Menu() {
 		this.in = new Scanner(System.in);
 		this.currentProfile = null;
-		this.profileList = new HashMap<Pair<String, String>, user_profile>();
+		this.profileList = new HashMap<Pair<String, String>, UserProfile>();
 		this.parse = new ParserUtils();
 	}
 
-	private void addProfile(user_profile profile) {
+	private void addProfile(UserProfile profile) {
 		
 		Pair<String, String> userAndPass = profile.getLoginInformation();
 		
@@ -158,14 +158,14 @@ public class Menu extends Thread{
 	//bank account functionality thread
 
 	private void makeProfile() {
-		user_profile newProfile = new user_profile();
+		UserProfile newProfile = new UserProfile();
 		Pair<String, String> userAndPass = getUserAndPass(newProfile);
 		newProfile.setLoginInformation(userAndPass.first(),userAndPass.second());
 		this.addProfile(newProfile);
 		System.out.println("Logged in as " + userAndPass.first() + ".");
 	}
 
-	private Pair<String, String> getUserAndPass(user_profile newProfile) {
+	private Pair<String, String> getUserAndPass(UserProfile newProfile) {
 		System.out.println("Enter a username for your new account:");
 		String username = in.nextLine();
 		System.out.println("Enter a password for your new account:");
@@ -224,10 +224,10 @@ public class Menu extends Thread{
 	}
 	
 
-	private user_profile logIn() {
+	private UserProfile logIn() {
 		System.out.println("Select an account to login by typing the associated username:");
 		int counter = 0;
-		for (user_profile account : profileList.values()) {
+		for (UserProfile account : profileList.values()) {
 			counter++;
 			
 			System.out.print(counter + " ");

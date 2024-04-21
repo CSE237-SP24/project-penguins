@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import user_information.user_profile;
+import user_information.UserProfile;
 
 class user_profile_tests {
 
@@ -19,11 +19,11 @@ class user_profile_tests {
     // should return false )
 
     // set up the objects needed for the test suite
-    user_profile sampleUser;
+    UserProfile sampleUser;
 
     @BeforeEach
     void setup() {
-        sampleUser = new user_profile();
+        sampleUser = new UserProfile();
 
     }
 
