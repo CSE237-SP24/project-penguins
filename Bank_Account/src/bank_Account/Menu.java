@@ -17,6 +17,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import user_information.UserProfile;
 import Utility.Pair;
 import Utility.ParserUtils;
+
 public class Menu extends Thread{
 
 	private Scanner in;
@@ -162,13 +163,13 @@ public class Menu extends Thread{
 		Pair<String, String> userAndPass = getUserAndPass(newProfile);
 		newProfile.setLoginInformation(userAndPass.first(),userAndPass.second());
 		this.addProfile(newProfile);
-		System.out.println("Logged in as " + userAndPass.first() + ".");
+		System.out.println("Logged in as " + userAndPass.first() + "!");
 	}
 
 	private Pair<String, String> getUserAndPass(UserProfile newProfile) {
-		System.out.println("Enter a username for your new account:");
+		System.out.println("Enter a username for your new user profile:");
 		String username = in.nextLine();
-		System.out.println("Enter a password for your new account:");
+		System.out.println("Enter a password for your new user profile:");
 		String password = in.nextLine();
 		
 		while (!newProfile.isValidUsername(username) || !newProfile.isValidPassword(password))  {
@@ -208,7 +209,7 @@ public class Menu extends Thread{
 	}
 
 	private void logOut() {
-		System.out.println("Type 1 to log into an existing account:\nType 2 to create a new account:");
+		System.out.println("Type 1 to log into an existing user profile:\nType 2 to create a new user profile:");
 		int selection = parse.getValidInt();
 		while (selection != 1 && selection != 2) {
 			System.out.println("Invalid input. Please type 1 or 2:");
@@ -225,31 +226,30 @@ public class Menu extends Thread{
 	
 
 	private UserProfile logIn() {
-		System.out.println("Select an account to login by typing the associated username:");
-		int counter = 0;
+		System.out.println("Below is a list of all existing user profile usernames:");
+		
 		for (UserProfile account : profileList.values()) {
-			counter++;
-			
-			System.out.print(counter + " ");
 			
 			System.out.println(account.getLoginInformation().first());
 			
 		}
-		String user = in.next();
 		
-		System.out.print("Input the password associated with this username.");
-		Pair<String, String> userAndPass = new Pair<String,String>(user, in.next());
-		System.out.println(userAndPass);
-		System.out.println(this.profileList.keySet());
+		String user;
+		Pair<String, String> userAndPass = new Pair<String,String>("", "");
+		
 		while(!this.profileList.keySet().contains(userAndPass)) {
 			
-			System.out.println("incorrect username or password, input user name ");
+			System.out.println("Enter the username of the user profile you would like to login to:");
 		    user = in.next();
 			
-			System.out.print("Input the password associated with this username.");
+		    System.out.println("Enter the password associated with this username:");
 			userAndPass = new Pair<String,String>(user, in.next());
 			
-			
+			if (!this.profileList.keySet().contains(userAndPass)) {
+				System.out.println("Incorrect username or password. Please try again.");
+			} else {
+				System.out.println("Successfully logged into " + user + "!");
+			}
 		}
 			
 		
