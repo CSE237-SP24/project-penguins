@@ -169,11 +169,16 @@ public class Menu extends Thread{
 	private Pair<String, String> getUserAndPass(UserProfile newProfile) {
 		System.out.println("Enter a username for your new user profile:");
 		String username = in.nextLine();
+		while (!newProfile.isValidUsername(username)) {
+			System.out.println("Enter a username for your new user profile:");
+			username = in.nextLine();
+		}
+		
 		System.out.println("Enter a password for your new user profile:");
 		String password = in.nextLine();
 		
-		while (!newProfile.isValidUsername(username) || !newProfile.isValidPassword(password))  {
-			username = in.nextLine();
+		while (!newProfile.isValidPassword(password))  {
+			System.out.println("Enter a password for your new user profile:");
 			password = in.nextLine();
 		}
 		
