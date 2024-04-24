@@ -51,5 +51,30 @@ NOTE: All code is currently in the **dev branch**
 - Music can be finnicky depending on hardware, some e.g. some antiviruses block Eclipse from accessing speakers, etc.
 - Menu testing is largely dependent on user input, however methods can can be tested should be
 - Code makes use of many effectively while(true) loops, it is entirely possible that certain inputs could cause an infinite while loop.
+
+
+
+## iteration 3
+Overall, Users should be able to create a profile with our esteemed banking company and create bank accounts to store currency for operations and management within 
+the personal and private sector. Users can create multiple bank accounts, log in, log out, and conduct other functionalities. Users are able to store their personal information being
+first name, last name, and/or social security number in our system for storage and efficient retrieval. Use our application to get acquainted and let your 
+wildest dreams unfold!
+
+**During this iteration, we accomplished the following:**
+- Removed the Sound Track Background Music Implimentation. 
+- Organized branches by deleting unneeded ones
+- Fixed File Naming Conventions across some packages
+- Added First Name, Last Name, and Social Security Number as user fields that are stored with user profiles and user bank account information
+- refactored methods to require less lines
+- implimented bank account history (each account stores what happens to it regarding deposits, withdrawals and other bank account operations)
+- users are able to see the bank account history data once it is updated when requested within the application. 
+
+
+
+**For our next interation, we intend to**
+- This is the final iteration in this course
+
+**Is there anything we've implemented that doesn't work?**
+- Not that we are aware of.
   
   
