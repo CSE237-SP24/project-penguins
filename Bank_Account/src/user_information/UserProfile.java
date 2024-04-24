@@ -32,8 +32,8 @@ public class UserProfile {
 	// default userProfile constructor
 	public UserProfile() {
 
-		this.firstName = "No First Name.";
-		this.lastName = "No Last Name.";
+		this.setFirstName("No First Name.");
+		this.setLastName("No Last Name.");
 
 		this.loginInformation = new Pair<String, String>("No Username", "No Password");
 		
@@ -42,7 +42,7 @@ public class UserProfile {
 		this.securityQuestionAnswer = "No Security Answer has been Inputted.";
 
 		this.profileID = "No profile number generated.";
-		this.socialSecurityNumber = "No social security number entered for this profile.";
+		this.setSocialSecurityNumber("No social security number entered for this profile.");
 		// TODO: Filing characters will be added here as development continues
 		this.filingCharacters = new ArrayList<>();
 		this.filingCharacters.add("~");
@@ -217,6 +217,30 @@ public class UserProfile {
 
 	public void setAllBankAccounts(ArrayList<Bank_Account> allBankAccounts) {
 		this.allBankAccounts = allBankAccounts;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getSocialSecurityNumber() {
+		return socialSecurityNumber;
+	}
+
+	public void setSocialSecurityNumber(String socialSecurityNumber) {
+		this.socialSecurityNumber = socialSecurityNumber;
 	}
 
 }

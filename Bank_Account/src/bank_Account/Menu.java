@@ -48,7 +48,10 @@ public class Menu extends Thread {
 	private void makeProfile() {
 		UserProfile newProfile = new UserProfile();
 		Pair<String, String> userAndPass = getUserAndPass(newProfile);
+		Pair<String, String> firstAndLast = getFirstAndLastName();
 		newProfile.setLoginInformation(userAndPass.first(), userAndPass.second());
+		newProfile.setFirstName(firstAndLast.first());
+		newProfile.setLastName(firstAndLast.second());
 		this.addProfile(newProfile);
 		System.out.println("Logged in as " + userAndPass.first() + "!");
 	}
@@ -70,6 +73,16 @@ public class Menu extends Thread {
 		}
 
 		return new Pair<String, String>(username, password);
+	}
+	
+	private Pair<String, String> getFirstAndLastName() {
+		System.out.println("Enter your first name:");
+		String first = in.nextLine();
+
+		System.out.println("Enter your last name:");
+		String last = in.nextLine();
+
+		return new Pair<String, String>(first, last);
 	}
 
 	public void runMainLoop() {
@@ -119,7 +132,8 @@ public class Menu extends Thread {
 
 		for (UserProfile account : profileList.values()) {
 
-			System.out.println(account.getLoginInformation().first());
+			System.out.print(account.getLoginInformation().first() + " owned by ");
+			System.out.println(account.getFirstName() + " " + account.getLastName());
 
 		}
 
