@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import user_information.UserProfile;
+import Utility.InputHandler;
 import Utility.Pair;
 import Utility.ParserUtils;
 
@@ -165,37 +166,19 @@ public class Menu extends Thread {
 	private void viewExisting() {
 		Bank_Account currentAccount = this.getUserToSelectBankAccount();
 		int userAction = this.getUserSelectionToDepositWithdrawOrView();
+		InputHandler inputHandle = new InputHandler();
+		
 		if (userAction == 1) {
 			// Deposit
-			System.out.println("How much would you like to deposit?");
-			double deposit = parse.getValidDouble();
-
-			try {
-
-				currentAccount.deposit(deposit);
-			} catch (IllegalArgumentException e) {
-				System.out.println("Invalid Amount, please try again");
-			}
-
-			System.out.println("Balance is now: $" + currentAccount.getBalance());
+			inputHandle.handleDeposit(currentAccount, parse);
 		} else if (userAction == 2) {
 			// Withdraw
-			if (currentAccount.getBalance() == 0.0) {
-				System.out.println("Bank account has no money to withdraw.");
-			} else {
-				System.out.println("How much would you like to withdraw?:");
-				double withdraw = parse.getValidDouble();
-				try {
-					currentAccount.withdraw(withdraw);
-				} catch (IllegalArgumentException e) {
-					System.out.println("Invalid Amount, please try again");
-				}
-
-				System.out.println("Balance is now: $" + currentAccount.getBalance());
-			}
+			inputHandle.handleWithdrawal(currentAccount, parse);
 		} else if (userAction == 3) {
 			// View balance
 			System.out.println("Current balance: $" + currentAccount.getBalance());
+		}else if(userAction == 4) {
+			System.out.println(currentAccount.getName()+"'s history:" + currentAccount.getHistory());
 		}
 	}
 
@@ -266,10 +249,10 @@ public class Menu extends Thread {
 
 	private int getUserSelectionToDepositWithdrawOrView() {
 		System.out
-				.println("Type 1 to deposit into the bank account:\nType 2 to withdraw:\nType 3 to view the balance:");
+				.println("Type 1 to deposit into the bank account:\nType 2 to withdraw:\nType 3 to view the balance:\nType 4 to print account history:");
 		int selection = parse.getValidInt();
-		while (selection != 1 && selection != 2 && selection != 3) {
-			System.out.println("Invalid input. Please type 1, 2, or 3:");
+		while (selection != 1 && selection != 2 && selection != 3 && selection != 4) {
+			System.out.println("Invalid input. Please type 1, 2, 3 or 4:");
 			selection = parse.getValidInt();
 		}
 		return selection;
