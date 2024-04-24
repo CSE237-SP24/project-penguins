@@ -61,13 +61,14 @@ first name, last name, and/or social security number in our system for storage a
 wildest dreams unfold!
 
 **During this iteration, we accomplished the following:**
-- Removed the Sound Track Background Music Implimentation. 
+- Removed the Sound Track Background Music Implimentation
 - Organized branches by deleting unneeded ones
 - Fixed File Naming Conventions across some packages
 - Added First Name, Last Name, and Social Security Number as user fields that are stored with user profiles and user bank account information
-- refactored methods to require less lines
-- implimented bank account history (each account stores what happens to it regarding deposits, withdrawals and other bank account operations)
-- users are able to see the bank account history data once it is updated when requested within the application. 
+- Refactored methods to require less lines
+- Implimented bank account history (each account stores what happens to it regarding deposits, withdrawals and other bank account operations)
+- Users are able to see the bank account history data once it is updated when requested within the application
+- Major bug fixes including patching the infinite loop when logging in
 
 
 
