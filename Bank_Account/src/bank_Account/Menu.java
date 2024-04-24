@@ -1,42 +1,28 @@
 
 package bank_Account;
 
-
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
-
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
 import user_information.UserProfile;
 import Utility.Pair;
 import Utility.ParserUtils;
 
-public class Menu extends Thread{
+public class Menu extends Thread {
 
 	private Scanner in;
 	private UserProfile currentProfile;
-	private Map< Pair<String, String>, UserProfile> profileList;
+	private Map<Pair<String, String>, UserProfile> profileList;
 	private ParserUtils parse;
-
 
 	public static void main(String[] args) {
 		Menu mainMenu = new Menu();
-		distributeThreads();
-		
+
 		mainMenu.makeProfile();
 
 		// The program's main loop: continually re-prompts the user unless they quit
 		mainMenu.runMainLoop();
-
-		//ends both the song and bank account threads
-		System.exit(0);
 
 	}
 
@@ -48,120 +34,21 @@ public class Menu extends Thread{
 	}
 
 	private void addProfile(UserProfile profile) {
-		
+
 		Pair<String, String> userAndPass = profile.getLoginInformation();
-		
-		
-		
+
 		this.profileList.put(new Pair<String, String>(userAndPass.first(),
 				userAndPass.second()), profile);
-		
+
 		this.currentProfile = profile;
 	}
 
-	//used to start the song thread and the menu thread
-	public static void distributeThreads(){
-		System.out.println("Please turn on your sound TO THE MAX if you wish to hear our background track");
-		Menu main = new Menu();
-		main.start();
-
-	}
-	//song playing thread
-	public void run(){
-		songPlayerCycler();
-	}
-	public void songPlayerCycler(){
-
-//play the song during program execution
-		String chosenSong = "soundFiles/battletheme10.wav";
-
-		File songFile = new File(chosenSong);
-			if (songFile.exists()) {
-				AudioInputStream musicPlayerSystem = getAudioInputStreamFromFile(songFile);
-				if(musicPlayerSystem != null) {
-					Clip audioClip = getClipFromFile();
-					processSong(audioClip,musicPlayerSystem);
-				}
-				else {
-					return;
-				}
-			} else {
-				System.out.println("Sound is still being integrated for all operating systems, please use a different computer or audio system.");
-				System.out.println(System.getProperty("user.dir"));
-			}
-	}
-
-	/* processSong
-	 * @params an AudioClip System and an AudioInputStream
-	 * preps the program for playing the song and starts the clip
-	 */
-	public void processSong(Clip audioClip,AudioInputStream musicPlayerSystem ){
-		try {
-			audioClip.open(musicPlayerSystem);
-		} catch (LineUnavailableException clipUnableToBeRendered) {
-			System.out.println("The required audio system java libraries were unable to be rendered in the program.");
-			return;
-		} catch (IOException fileNotPresent) {
-			System.out.println("The required audio files were unable to be rendered in the program.");
-			return;
-		}
-
-		while(true) {
-			//start the song
-			audioClip.start();
-			audioClip.loop(audioClip.LOOP_CONTINUOUSLY);
-		}
-
-	}
-
-
-	/* getAudioInputStreamFromFile
-	 * @params none
-	 * preps the AudioInputStream for playing the song
-	 */
-	public AudioInputStream getAudioInputStreamFromFile(File songFile){
-		AudioInputStream musicPlayerSystem = null;// song
-		
-		
-	
-		try {
-			musicPlayerSystem = AudioSystem.getAudioInputStream(songFile);
-			return musicPlayerSystem;
-		} catch (UnsupportedAudioFileException sampleAudioException) {
-			System.out.println("Your audio system is incompatible with our application, apologies for the inconvenience.");
-			return null;
-
-		} catch (IOException fileNotFound) {
-			System.out.println("The required audio files were unable to be rendered in the program.");
-			return null;
-
-		}
-
-	}
-
-	/* getClipFromFile
-	 * @params none
-	 * preps the clip for playing the song
-	 */
-	public Clip getClipFromFile(){
-		Clip audioClip= null;
-		try {
-			audioClip = AudioSystem.getClip();
-			return audioClip;
-		} catch (LineUnavailableException clipUnableToBeCreated) {
-			System.out.println("The required audio system java libraries were unable to be rendered in the program.");
-			return null;
-		}
-
-
-	}
-
-	//bank account functionality thread
+	// bank account functionality thread
 
 	private void makeProfile() {
 		UserProfile newProfile = new UserProfile();
 		Pair<String, String> userAndPass = getUserAndPass(newProfile);
-		newProfile.setLoginInformation(userAndPass.first(),userAndPass.second());
+		newProfile.setLoginInformation(userAndPass.first(), userAndPass.second());
 		this.addProfile(newProfile);
 		System.out.println("Logged in as " + userAndPass.first() + "!");
 	}
@@ -173,23 +60,21 @@ public class Menu extends Thread{
 			System.out.println("Enter a username for your new user profile:");
 			username = in.nextLine();
 		}
-		
+
 		System.out.println("Enter a password for your new user profile:");
 		String password = in.nextLine();
-		
-		while (!newProfile.isValidPassword(password))  {
+
+		while (!newProfile.isValidPassword(password)) {
 			System.out.println("Enter a password for your new user profile:");
 			password = in.nextLine();
 		}
-		
-		
-		
+
 		return new Pair<String, String>(username, password);
 	}
 
-	
 	public void runMainLoop() {
-		// Prompt user for a number (1 = view account, 2 = create account, 3 = logout, 4 = quit)
+		// Prompt user for a number (1 = view account, 2 = create account, 3 = logout, 4
+		// = quit)
 		int createOrViewSelection = this.getUserSelectionToCreateOrView();
 
 		while (createOrViewSelection != 4) {
@@ -209,7 +94,7 @@ public class Menu extends Thread{
 			// After desired action is completed, re-prompt user
 			createOrViewSelection = this.getUserSelectionToCreateOrView();
 		}
-		
+
 		System.out.println("User has quit. Goodbye!");
 	}
 
@@ -221,49 +106,44 @@ public class Menu extends Thread{
 			selection = parse.getValidInt();
 		}
 		if (selection == 1) {
-			
+
 			this.currentProfile = this.logIn();
-			
+
 		} else if (selection == 2) {
 			this.makeProfile();
 		}
 	}
-	
 
 	private UserProfile logIn() {
 		System.out.println("Below is a list of all existing user profile usernames:");
-		
+
 		for (UserProfile account : profileList.values()) {
-			
+
 			System.out.println(account.getLoginInformation().first());
-			
+
 		}
-		
+
 		String user;
-		Pair<String, String> userAndPass = new Pair<String,String>("", "");
-		
-		while(!this.profileList.keySet().contains(userAndPass)) {
-			
+		Pair<String, String> userAndPass = new Pair<String, String>("", "");
+
+		while (!this.profileList.keySet().contains(userAndPass)) {
+
 			System.out.println("Enter the username of the user profile you would like to login to:");
-		    user = in.next();
-			
-		    System.out.println("Enter the password associated with this username:");
-			userAndPass = new Pair<String,String>(user, in.next());
-			
+			user = in.next();
+
+			System.out.println("Enter the password associated with this username:");
+			userAndPass = new Pair<String, String>(user, in.next());
+
 			if (!this.profileList.keySet().contains(userAndPass)) {
 				System.out.println("Incorrect username or password. Please try again.");
 			} else {
 				System.out.println("Successfully logged into " + user + "!");
 			}
 		}
-			
-		
-		return this.profileList.get(userAndPass);
-		
-	}
-	
-	
 
+		return this.profileList.get(userAndPass);
+
+	}
 
 	private void viewExisting() {
 		Bank_Account currentAccount = this.getUserToSelectBankAccount();
@@ -272,15 +152,14 @@ public class Menu extends Thread{
 			// Deposit
 			System.out.println("How much would you like to deposit?");
 			double deposit = parse.getValidDouble();
-			
+
 			try {
-			
-			currentAccount.deposit(deposit);
-			}
-			catch(IllegalArgumentException e) {
+
+				currentAccount.deposit(deposit);
+			} catch (IllegalArgumentException e) {
 				System.out.println("Invalid Amount, please try again");
 			}
-			
+
 			System.out.println("Balance is now: $" + currentAccount.getBalance());
 		} else if (userAction == 2) {
 			// Withdraw
@@ -291,10 +170,10 @@ public class Menu extends Thread{
 				double withdraw = parse.getValidDouble();
 				try {
 					currentAccount.withdraw(withdraw);
-				}catch(IllegalArgumentException e) {
+				} catch (IllegalArgumentException e) {
 					System.out.println("Invalid Amount, please try again");
 				}
-				
+
 				System.out.println("Balance is now: $" + currentAccount.getBalance());
 			}
 		} else if (userAction == 3) {
@@ -307,22 +186,17 @@ public class Menu extends Thread{
 		// Prompts the user for a number (1 = checking, 2 = savings)
 		System.out.println("Type 1 to create a checking account:\nType 2 to create a savings account:");
 		int selection = parse.getValidInt();
-		
+
 		while (selection != 1 && selection != 2) {
 			System.out.println("Invalid input. Please type 1 or 2:");
 			selection = parse.getValidInt();
 		}
-		
-		
+
 		System.out.println("Type the name of the bank account to be created:");
 		String name = in.next();
-		
+
 		this.createNewAccount(name, selection);
 	}
-
-	
-	
-	
 
 	private void createNewAccount(String name, int accountType) {
 		if (accountType == 1) {
@@ -338,7 +212,8 @@ public class Menu extends Thread{
 	}
 
 	private int getUserSelectionToCreateOrView() {
-		System.out.println("Type 1 to view existing bank accounts:\nType 2 to create a bank account:\nType 3 to log out:\nType 4 to quit the program:");
+		System.out.println(
+				"Type 1 to view existing bank accounts:\nType 2 to create a bank account:\nType 3 to log out:\nType 4 to quit the program:");
 		int selection = parse.getValidInt();
 		while (selection != 1 && selection != 2 && selection != 3 && selection != 4) {
 			System.out.println("Invalid input. Please type 1, 2, 3, or 4:");
@@ -358,22 +233,23 @@ public class Menu extends Thread{
 			counter++;
 			System.out.println(counter + " " + account.name);
 		}
-		
+
 		int selection = parse.getValidInt();
-		
+
 		while (selection <= 0 || selection > counter) {
-			
+
 			System.out.println("Invalid number. Try again.");
-			
+
 			selection = parse.getValidInt();
-			
+
 		}
-		
+
 		return currentProfile.getAllBankAccounts().get(selection - 1);
 	}
 
 	private int getUserSelectionToDepositWithdrawOrView() {
-		System.out.println("Type 1 to deposit into the bank account:\nType 2 to withdraw:\nType 3 to view the balance:");
+		System.out
+				.println("Type 1 to deposit into the bank account:\nType 2 to withdraw:\nType 3 to view the balance:");
 		int selection = parse.getValidInt();
 		while (selection != 1 && selection != 2 && selection != 3) {
 			System.out.println("Invalid input. Please type 1, 2, or 3:");
@@ -382,6 +258,4 @@ public class Menu extends Thread{
 		return selection;
 	}
 
-	
-	
 }
