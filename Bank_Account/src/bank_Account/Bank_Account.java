@@ -15,7 +15,7 @@ public class Bank_Account {
 	public Bank_Account(String name) {
 		this.balance = 0;
 		this.name = name;
-		this.history = "no_history";
+		this.history = "";
 
 	}
 
@@ -27,6 +27,7 @@ public class Bank_Account {
 		}
 
 		this.balance += amount;
+		AppendHistory("Added " + amount + "$ to account.");
 		return this.balance;
 	}
 
@@ -53,7 +54,7 @@ public class Bank_Account {
 		}
 
 		this.balance -= amount;
-
+		AppendHistory("Withdrew " + amount + "$ from account.");
 		return this.balance;
 	}
 

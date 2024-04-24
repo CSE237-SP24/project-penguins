@@ -82,7 +82,7 @@ public class UserProfile {
 		Pair<String, String> newLoginInformation = new Pair<>(userName, passWord);
 		
 		this.loginInformation = newLoginInformation;
-		System.out.println("Username and Password Successfuly Generated and Recorded");
+		
 		return true;
 
 	}
@@ -213,6 +213,16 @@ public class UserProfile {
 
 	public ArrayList<Bank_Account> getAllBankAccounts() {
 		return allBankAccounts;
+	}
+	
+	public String printHistory() {
+		String history = "";
+		
+		for(Bank_Account acct : this.allBankAccounts) {
+			history += acct.getName() + acct.getHistory() + "\n";
+		}
+		return history;
+		
 	}
 
 	public void setAllBankAccounts(ArrayList<Bank_Account> allBankAccounts) {

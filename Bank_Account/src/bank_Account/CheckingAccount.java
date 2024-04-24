@@ -14,7 +14,7 @@ public class CheckingAccount extends Bank_Account {
 	}
 
 	// deposits a double to the bank account balance
-	public double deposit(double amount) {
+	public double deposit(double amount) throws IllegalArgumentException{
 
 		if (amount < 0) {
 			throw new IllegalArgumentException("Amount must be positive");
@@ -29,7 +29,7 @@ public class CheckingAccount extends Bank_Account {
 	}
 
 	// withdraws a double from the bank account balance
-	public double withdraw(double amount) {
+	public double withdraw(double amount)throws IllegalArgumentException {
 
 		if (amount < 0) {
 			throw new IllegalArgumentException("Amount must be positive");

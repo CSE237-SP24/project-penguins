@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import user_information.UserProfile;
+import bank_Account.*;
 
 class user_profile_tests {
 
@@ -109,5 +110,26 @@ class user_profile_tests {
     void testUpdateInvalidPasswordAndUsername() {
         assertEquals(false, sampleUser.setLoginInformation("Nevin@isc00Ler", "Stan@L"));
     }
+    
+    @Test
+    void testHistory() {
+    	
+    	ArrayList<Bank_Account> accts = new ArrayList<>();
+    	String correctHistory = "";
+    	for(int i = 0; i < 10; i++) {
+    		Bank_Account acct = new SavingsAccount("account: " + i, 0, 0);
+    		acct.deposit(10);
+    		correctHistory += "account: " + i + "\n" + "Added 10.0$ to account.\n";
+    		
+    		accts.add(acct);
+    	}
+    	
+    	sampleUser.setAllBankAccounts(accts);
+    	
+    	
+        assertEquals(sampleUser.printHistory(), correctHistory);
+    }
+    
+    
 
 }

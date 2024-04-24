@@ -1,6 +1,8 @@
 package tests.bank_account_general_tests;
 
 import bank_Account.Bank_Account;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -86,5 +88,25 @@ class Bank_Account_test {
 		testAccount.AppendHistory("5e-32 dogecoin");
 		assertEquals("\n" + "5e-32 dogecoin", testAccount.getHistory());
 	}
+	
+	@Test
+	void testAppendedHistoryforDespositsAndWithdrawls() {
+		String correctHistory = "";
+		for(int thing = 0; thing < 100; thing++) {
+			testAccount.deposit(100);
+			correctHistory += "\n" + "Added 100.0$ to account.";
+			
+			testAccount.withdraw(100);
+			correctHistory += "\n" + "Withdrew 100.0$ from account.";
+			
+		}
+		
+		assertEquals(correctHistory, testAccount.getHistory());
+		
+		
+		
+		
+	}
+	
 
 }
