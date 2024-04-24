@@ -16,17 +16,17 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import bank_Account.Menu;
-import user_information.user_profile;
+import user_information.UserProfile;
 
 public class Menu_tests {
     
     Menu testMenu;
-    user_profile testUser;
+    UserProfile testUser;
 
     @BeforeEach
     void setup() {
         testMenu = new Menu();
-        testUser = new user_profile();
+        testUser = new UserProfile();
         testMenu.songPlayerCycler();
     }
 
