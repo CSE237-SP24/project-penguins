@@ -52,9 +52,12 @@ public class Menu extends Thread {
 		newProfile.setLoginInformation(userAndPass.first(), userAndPass.second());
 		newProfile.setFirstName(firstAndLast.first());
 		newProfile.setLastName(firstAndLast.second());
+		String ssn = parse.getValidSSN();
+		newProfile.setSocialSecurityNumber(ssn);
 		this.addProfile(newProfile);
 		System.out.println("Logged in as " + userAndPass.first() + "!");
 	}
+
 
 	private Pair<String, String> getUserAndPass(UserProfile newProfile) {
 		System.out.println("Enter a username for your new user profile:");

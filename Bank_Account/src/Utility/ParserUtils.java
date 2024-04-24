@@ -33,4 +33,15 @@ public class ParserUtils {
 			}
 		}
 	}
+	
+	public String getValidSSN() {
+		System.out.println("Enter your social security number:");
+		int ssn = this.getValidInt();
+		while (Integer.toString(ssn).length() != 9) {
+			System.out.println("Must be nine digits:");
+			ssn = this.getValidInt();
+		}
+		return Integer.toString(ssn);
+	}
+	
 }
